@@ -1,0 +1,6 @@
+# LoLCrawlerPy
+LoLAPI爬虫
+需要手动在工程目录下添加
+matches文件夹 as 数据存放
+matchIDsDownloaded.txt，matchIDsDownloading.txt，summonerIDsDownloaded.txt，summonerIDsDownloading.txt as 缓存容器
+并在summonerIDsDownloading中输入任意召唤师ID（从官方API网页获取）
