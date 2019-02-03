@@ -22,7 +22,7 @@ matchIDsDownloading = []
 summonerIDsDownloaded = []
 summonerIDsDownloading = []
 
-watcher = RiotWatcher('RGAPI-9c8430c4-2276-4466-80f5-1b59c48cd0a7')
+watcher = RiotWatcher('RGAPI-3029c8be-d7e4-48a4-9df6-d4751e61494c')
 
 
 
@@ -65,14 +65,16 @@ def MatchCrawler():
             else:
                 print(err.response.status_code)
                 continue
-        except requests.exceptions.SSLError as err:
+        except :
             print('ConnectionError')
-            time.sleep(5)
+            time.sleep(30)
             crawlerIndicator()
         
         #将match转为json并存放至本地
         with open(path+'match'+str(matchId)+'.txt','w') as m:
             m.write(json.dumps(match))
+
+
 
         #下载timeline
         try:
@@ -89,9 +91,9 @@ def MatchCrawler():
             else:
                 print(err.response.status_code)
                 continue
-        except requests.exceptions.SSLError as err:
+        except :
             print('ConnectionError')
-            time.sleep(5)
+            time.sleep(30)
             crawlerIndicator()
 
         #将timeline转为json并存放至本地
@@ -99,8 +101,12 @@ def MatchCrawler():
         with open(path+'timeline'+str(matchId)+'.txt','w') as m:
             m.write(json.dumps(timeline))
 
+
+
         if len(summonerIDsDownloading)<1000:
             appendSummonerId(match)
+        del match
+        del timeline
         matchIDsDownloading.remove(matchId)
         matchIDsDownloaded.append(matchId)
         crawlerIndicator()
@@ -124,12 +130,13 @@ def MatchListCrawler():
             else:
                 print(err.response.status_code)
                 continue
-        except requests.exceptions.SSLError as err:
+        except :
             print('ConnectionError')
-            time.sleep(5)
+            time.sleep(30)
             crawlerIndicator()
 
         appendMatchId(matchList)
+        del matchList
         summonerIDsDownloading.remove(summonerId)
         summonerIDsDownloaded.append(summonerId)
         crawlerIndicator()
@@ -188,7 +195,7 @@ def saveNumberList(list,fileName):
 def apiTest(watcher):
     match = watcher.match.by_id('kr',3421636538)
     print('Good! match API runs successfully with player one of this match called: ' + match['participantIdentities'][0]['player']['summonerName'])
-    matchlist = watcher.match.matchlist_by_account('kr',202784392)    
+    matchlist = watcher.match.matchlist_by_account('kr','KkK8wy0p7zq_mtpcr-odeoTwCWnafhX64X8YYBpKrvMv_EZgicPLkA_K')    
     print('Good! matchlist API runs successfully with matches count at: '+str(len(matchlist['matches'])))
     return
 
