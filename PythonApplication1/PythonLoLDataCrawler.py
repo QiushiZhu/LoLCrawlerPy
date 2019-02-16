@@ -9,6 +9,8 @@ from requests import HTTPError
 import gc
 import tracemalloc
 
+import logging
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
 
 sys.setrecursionlimit(100000)
 
@@ -22,7 +24,7 @@ matchIDsDownloading = []
 summonerIDsDownloaded = []
 summonerIDsDownloading = []
 
-watcher = RiotWatcher('RGAPI-3029c8be-d7e4-48a4-9df6-d4751e61494c')
+watcher = RiotWatcher('RGAPI-753fa9d9-7ec6-4b63-bd92-9428824c4484')
 
 
 
@@ -50,10 +52,14 @@ def appendMatchId(matchlist):
 def MatchCrawler():
     for i in range(1):
         matchId = matchIDsDownloading[0]
+        global count
         #下载match
         try:
+            logging.debug(str(count))
+            logging.debug('match downloading...')
             print('match '+str(matchId)+' is downloading now')
             match = watcher.match.by_id('kr',matchId)
+            logging.debug('match downloaded...')
         except HTTPError as err:
             if err.response.status_code == 429:                
                 print('429. We should retry in X seconds.')
@@ -78,7 +84,9 @@ def MatchCrawler():
 
         #下载timeline
         try:
+            logging.debug('timeline downloading...')
             print('timeline '+str(matchId)+' is downloading now')
+            logging.debug('timeline downloaded...')
             timeline = watcher.match.timeline_by_match('kr',matchId)
         except HTTPError as err:
             if err.response.status_code == 429:                
@@ -116,7 +124,9 @@ def MatchListCrawler():
     for summonerId in summonerIDsDownloading:
 
         try:
+            logging.debug('matchlist downloading...')
             matchList = watcher.match.matchlist_by_account('kr',summonerId,420,begin_time=1548316800000)
+            logging.debug('matchlist downloaded...')
         except HTTPError as err:
             if err.response.status_code == 429:                
                 print('429. We should retry in X seconds.')
@@ -144,6 +154,7 @@ def MatchListCrawler():
 
 #判断应该进行哪种爬取的入口函数
 def crawlerIndicator():
+    logging.debug('Choose which kind of file to download')
     global count
     count +=1
     print(count)
@@ -161,6 +172,7 @@ def crawlerIndicator():
 
 #保持硬盘上容器和缓存中容器实时同步
 def CollectionSynchronize(type):
+    logging.debug('Synchronizing...')
     if type == 0:
          with open('F:\lolMatchData\data\matchIDsDownloaded.txt','r') as m:
              for line in m.readlines():
